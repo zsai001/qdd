@@ -20,6 +20,10 @@ from style import (
     view_styles, add_style, edit_style, 
     delete_style, manage_style_versions
 )
+from template import (
+    view_templates, add_template, edit_template,
+    delete_template, manage_template_versions
+)
 
 console = Console()
 
@@ -469,36 +473,6 @@ if __name__ == "__main__":
         cli()
     else:
         main_menu()
-
-def show_template_menu():
-    while True:
-        console.print(Panel.fit(
-            "模版管理\n\n"
-            "1. 查看模版列表\n"
-            "2. 添加新模版\n"
-            "3. 编辑模版\n"
-            "4. 删除模版\n"
-            "5. 模版版本管理\n"
-            "0. 返回上级菜单",
-            title="模版管理菜单"
-        ))
-        
-        choice = click.prompt("请选择", type=str, default="0")
-        
-        if choice == "1":
-            view_templates()
-        elif choice == "2":
-            add_template()
-        elif choice == "3":
-            edit_template()
-        elif choice == "4":
-            delete_template()
-        elif choice == "5":
-            manage_template_versions()
-        elif choice == "0":
-            break
-        else:
-            console.print("[red]无效的选项，请重新选择[/red]")
 
 # 在程序启动时设置 OpenAI API key
 appid, secret, openai_api_key = load_config()
