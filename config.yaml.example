@@ -1,0 +1,9 @@
+wechat:
+  appid: wx095e9
+  appsecret: 74dd27f14d49f
+openai:
+  api_key: "sk-0aae25a9"
+  api_base: "https://api.deepseek.com/v1"
+UNSPLASH_KEY: sQ4Qnorvr2ya_
+GOOGLE_API_KEY: AIzaSyC4S6Y
+GOOGLE_SEARCH_ENGINE_ID: c26

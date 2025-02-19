@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2C3E50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34495E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="200" height="200" fill="url(#grad)" />
+  
+  <!-- 代码块符号 -->
+  <rect x="40" y="50" width="120" height="80" rx="10" ry="10" fill="none" stroke="#ECF0F1" stroke-width="4"/>
+  
+  <!-- 代码线 -->
+  <line x1="60" y1="70" x2="140" y2="70" stroke="#3498DB" stroke-width="2" />
+  <line x1="60" y1="90" x2="120" y2="90" stroke="#3498DB" stroke-width="2" />
+  <line x1="60" y1="110" x2="100" y2="110" stroke="#3498DB" stroke-width="2" />
+  
+  <!-- 对话线 -->
+  <path d="M30 160 Q100 140 170 160" fill="none" stroke="#E74C3C" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- 文字 -->
+  <text x="100" y="185" font-family="SimHei, sans-serif" font-size="24" text-anchor="middle" fill="#ECF0F1">闲说编程</text>
+</svg>
