@@ -87,13 +87,15 @@ def view_templates():
         return
         
     table = Table(title="模板列表")
+    table.add_column("编号", style="cyan", justify="right")
     table.add_column("ID", style="cyan")
     table.add_column("名称", style="magenta")
     table.add_column("标签", style="blue")
     table.add_column("描述", style="green", max_width=40)
     
-    for template in templates:
+    for idx, template in enumerate(templates, 1):
         table.add_row(
+            str(idx),
             template["id"],
             template["name"],
             ", ".join(template.get("tags", [])),
@@ -101,25 +103,7 @@ def view_templates():
         )
     
     console.print(table)
-    
-    # 添加详细查看功能
-    if click.confirm("是否查看模板详情？"):
-        template_id = click.prompt("请输入要查看的模板ID", type=str)
-        template = next((t for t in templates if t["id"] == template_id), None)
-        if template:
-            console.print(Panel.fit(
-                f"[bold]模板名称:[/bold] {template['name']}\n"
-                f"[bold]描述:[/bold] {template['description']}\n"
-                f"[bold]标签:[/bold] {', '.join(template.get('tags', []))}\n"
-                f"[bold]写作语气:[/bold] {template.get('tone', '未设置')}\n"
-                f"[bold]文章结构:[/bold] {template.get('structure', '未设置')}\n"
-                f"[bold]写作技巧:[/bold] {', '.join(template.get('techniques', []))}\n"
-                f"[bold]来源URL:[/bold] {template.get('url', '无')}\n"
-                f"[bold]GPT提示词:[/bold]\n{template.get('prompt', '未设置')}",
-                title=f"模板详情 (ID: {template_id})"
-            ))
-        else:
-            console.print("[red]未找到指定的模板。[/red]")
+    return templates
 
 def get_cache_path(url):
     """获取URL对应的缓存文件路径"""

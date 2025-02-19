@@ -244,18 +244,20 @@ def view_styles():
     
     if not styles:
         console.print("[yellow]还没有保存的样式。[/yellow]")
-        return
+        return None
         
     table = Table(title="样式列表")
+    table.add_column("编号", style="cyan", justify="right")
     table.add_column("ID", style="cyan")
     table.add_column("创建时间", style="magenta")
     table.add_column("来源URL", style="blue")
     table.add_column("预览图", style="green")
     
-    for style in styles:
+    for idx, style in enumerate(styles, 1):
         created_at = datetime.fromisoformat(style["created_at"]).strftime("%Y-%m-%d %H:%M:%S")
         preview_path = style.get("preview_image", "无预览图")
         table.add_row(
+            str(idx),
             style["id"],
             created_at,
             style["source_url"],
@@ -263,6 +265,7 @@ def view_styles():
         )
     
     console.print(table)
+    return styles
 
 def add_style():
     """添加新样式"""
@@ -444,4 +447,106 @@ def clear_article_cache(url=None):
                 cache_file.unlink()
             console.print("[green]已清除所有缓存[/green]")
     except Exception as e:
-        console.print(f"[red]清除缓存失败: {str(e)}[/red]") 
+        console.print(f"[red]清除缓存失败: {str(e)}[/red]")
+
+def apply_style(content: str, style: dict) -> str:
+    """应用样式到文章内容"""
+    try:
+        # 获取样式规则
+        rules = style.get('rules', {})
+        
+        # 应用样式规则
+        styled_content = content
+        
+        # 应用标题样式
+        if 'title' in rules:
+            title_style = rules['title']
+            # 查找文章第一行作为标题
+            lines = styled_content.split('\n')
+            if lines:
+                title = lines[0]
+                styled_title = apply_title_style(title, title_style)
+                lines[0] = styled_title
+                styled_content = '\n'.join(lines)
+        
+        # 应用段落样式
+        if 'paragraph' in rules:
+            para_style = rules['paragraph']
+            styled_content = apply_paragraph_style(styled_content, para_style)
+        
+        # 应用其他样式规则
+        if 'formatting' in rules:
+            formatting = rules['formatting']
+            styled_content = apply_formatting(styled_content, formatting)
+        
+        return styled_content
+        
+    except Exception as e:
+        console.print(f"[red]应用样式失败: {str(e)}[/red]")
+        return content
+
+def apply_title_style(title: str, style: dict) -> str:
+    """应用标题样式"""
+    # 处理标题格式
+    if style.get('prefix'):
+        title = f"{style['prefix']}{title}"
+    if style.get('suffix'):
+        title = f"{title}{style['suffix']}"
+    if style.get('wrapper'):
+        title = f"{style['wrapper']}{title}{style['wrapper']}"
+    return title
+
+def apply_paragraph_style(content: str, style: dict) -> str:
+    """应用段落样式"""
+    lines = content.split('\n')
+    styled_lines = []
+    
+    in_paragraph = False
+    current_paragraph = []
+    
+    for line in lines:
+        if not line.strip():
+            if current_paragraph:
+                styled_lines.append(format_paragraph(current_paragraph, style))
+                current_paragraph = []
+            styled_lines.append('')
+            in_paragraph = False
+        else:
+            current_paragraph.append(line)
+            in_paragraph = True
+    
+    if current_paragraph:
+        styled_lines.append(format_paragraph(current_paragraph, style))
+    
+    return '\n'.join(styled_lines)
+
+def format_paragraph(lines: list, style: dict) -> str:
+    """格式化段落"""
+    text = ' '.join(lines)
+    
+    # 应用段落缩进
+    if style.get('indent'):
+        text = ' ' * style['indent'] + text
+    
+    # 应用段落间距
+    if style.get('spacing'):
+        text += '\n' * style['spacing']
+    
+    return text
+
+def apply_formatting(content: str, formatting: dict) -> str:
+    """应用通用格式化规则"""
+    styled_content = content
+    
+    # 应用替换规则
+    if 'replace' in formatting:
+        for old, new in formatting['replace'].items():
+            styled_content = styled_content.replace(old, new)
+    
+    # 应用正则替换规则
+    if 'regex_replace' in formatting:
+        import re
+        for pattern, repl in formatting['regex_replace'].items():
+            styled_content = re.sub(pattern, repl, styled_content)
+    
+    return styled_content 

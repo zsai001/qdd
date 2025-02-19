@@ -277,9 +277,10 @@ def show_article_menu():
     while True:
         console.print(Panel.fit(
             "文章创作\n\n"
-            "1. 从热点创作\n"
-            "2. 从自定义主题创作\n"
-            "3. 查看草稿箱\n"
+            "1. 标题生成\n"
+            "2. 一键改写\n"
+            "3. 从热点创作\n" 
+            "4. 查看草稿箱\n"
             "0. 返回上级菜单",
             title="创作菜单"
         ))
@@ -287,12 +288,15 @@ def show_article_menu():
         choice = click.prompt("请选择", type=str, default="0")
         
         if choice == "1":
+            from article import create_from_title
+            create_from_title()
+        elif choice == "2":
+            from article import create_from_url
+            create_from_url()
+        elif choice == "3":
             from gpt import create_from_trending
             create_from_trending()
-        elif choice == "2":
-            from gpt import create_from_topic
-            create_from_topic()
-        elif choice == "3":
+        elif choice == "4":
             from gpt import view_drafts
             view_drafts()
         elif choice == "0":
