@@ -1,6 +1,6 @@
 qdd
 
-## 启动
+1.启动
 * 拷贝config.yaml.example为config.yaml
 * 修改config.yaml
   - 修改公众号配置

@@ -11,13 +11,26 @@ import click
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+import requests
+from bs4 import BeautifulSoup
+import openai
+import hashlib
+from pathlib import Path
+from style import (
+    view_styles, add_style, edit_style, 
+    delete_style, manage_style_versions
+)
 
 console = Console()
 
 def load_config():
     with open('config.yaml', 'r') as file:
         config = yaml.safe_load(file)
-    return config['wechat']['appid'], config['wechat']['appsecret']
+    return (
+        config['wechat']['appid'],
+        config['wechat']['appsecret'],
+        config.get('openai', {}).get('api_key')
+    )
 
 def load_yaml_meta(content):
     try:
@@ -343,6 +356,66 @@ def publish_single():
     else:
         console.print("[red]无效的序号[/red]")
 
+def show_style_menu():
+    while True:
+        console.print(Panel.fit(
+            "样式管理\n\n"
+            "1. 查看样式列表\n"
+            "2. 添加新样式\n"
+            "3. 编辑样式\n"
+            "4. 删除样式\n"
+            "5. 样式版本管理\n"
+            "0. 返回上级菜单",
+            title="样式管理菜单"
+        ))
+        
+        choice = click.prompt("请选择", type=str, default="0")
+        
+        if choice == "1":
+            view_styles()
+        elif choice == "2":
+            add_style()
+        elif choice == "3":
+            edit_style()
+        elif choice == "4":
+            delete_style()
+        elif choice == "5":
+            manage_style_versions()
+        elif choice == "0":
+            break
+        else:
+            console.print("[red]无效的选项，请重新选择[/red]")
+
+def show_template_menu():
+    while True:
+        console.print(Panel.fit(
+            "模版管理\n\n"
+            "1. 查看模版列表\n"
+            "2. 添加新模版\n"
+            "3. 编辑模版\n"
+            "4. 删除模版\n"
+            "5. 模版版本管理\n"
+            "0. 返回上级菜单",
+            title="模版管理菜单"
+        ))
+        
+        choice = click.prompt("请选择", type=str, default="0")
+        
+        if choice == "1":
+            view_templates()
+        elif choice == "2":
+            add_template()
+        elif choice == "3":
+            edit_template()
+        elif choice == "4":
+            delete_template()
+        elif choice == "5":
+            manage_template_versions()
+        elif choice == "0":
+            break
+        else:
+            console.print("[red]无效的选项，请重新选择[/red]")
+
 def main_menu():
     while True:
         console.print(Panel.fit(
@@ -350,6 +423,8 @@ def main_menu():
             "1. 查看热点\n"
             "2. 创作文章\n"
             "3. 发布文章\n"
+            "4. 样式管理\n"
+            "5. 模版管理\n"
             "0. 退出",
             title="主菜单"
         ))
@@ -362,6 +437,10 @@ def main_menu():
             show_article_menu()
         elif choice == "3":
             show_publish_menu()
+        elif choice == "4":
+            show_style_menu()
+        elif choice == "5":
+            show_template_menu()
         elif choice == "0":
             console.print("[green]感谢使用，再见！[/green]")
             break
@@ -390,3 +469,37 @@ if __name__ == "__main__":
         cli()
     else:
         main_menu()
+
+def show_template_menu():
+    while True:
+        console.print(Panel.fit(
+            "模版管理\n\n"
+            "1. 查看模版列表\n"
+            "2. 添加新模版\n"
+            "3. 编辑模版\n"
+            "4. 删除模版\n"
+            "5. 模版版本管理\n"
+            "0. 返回上级菜单",
+            title="模版管理菜单"
+        ))
+        
+        choice = click.prompt("请选择", type=str, default="0")
+        
+        if choice == "1":
+            view_templates()
+        elif choice == "2":
+            add_template()
+        elif choice == "3":
+            edit_template()
+        elif choice == "4":
+            delete_template()
+        elif choice == "5":
+            manage_template_versions()
+        elif choice == "0":
+            break
+        else:
+            console.print("[red]无效的选项，请重新选择[/red]")
+
+# 在程序启动时设置 OpenAI API key
+appid, secret, openai_api_key = load_config()
+openai.api_key = openai_api_key
