@@ -1,18 +1,26 @@
 qdd
 
 ## 启动
-1.拷贝config.yaml.example为config.yaml
-2.修改config.yaml
+1.拷贝 config.yaml.example 为 config.yaml
+2.修改 config.yaml
   - 修改公众号配置
-  - 修改OpenAI配置
-  - 修改UNSPLASH_KEY
+  - 修改 OpenAI 配置
+  - 修改 UNSPLASH_KEY
 3.安装依赖
+在 Linux 或 MacOS 下：
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-4.安装playwright
+在 Windows PowerShell 下：
+```bash
+python3 -m venv .venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+4.安装 playwright
 ```bash
 playwright install
 ```
