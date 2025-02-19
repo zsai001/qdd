@@ -158,13 +158,99 @@ def show_trending_menu():
         
         if choice == "1":
             from trending import view_toutiao_trending
-            view_toutiao_trending()
+            selected_topic = view_toutiao_trending()
+            if selected_topic:
+                show_topic_detail(selected_topic)
         elif choice == "2":
             from trending import view_weibo_trending
-            view_weibo_trending()
+            selected_topic = view_weibo_trending()
+            if selected_topic:
+                show_topic_detail(selected_topic)
         elif choice == "3":
             from trending import view_zhihu_trending
-            view_zhihu_trending()
+            selected_topic = view_zhihu_trending()
+            if selected_topic:
+                show_topic_detail(selected_topic)
+        elif choice == "0":
+            break
+        else:
+            console.print("[red]无效的选项，请重新选择[/red]")
+
+def show_trending_data_menu(source: str, trending_data: list):
+    while True:
+        table = Table(title=f"{source}列表")
+        table.add_column("序号", justify="right", style="cyan")
+        table.add_column("标题", style="magenta")
+        table.add_column("热度", justify="right", style="green")
+
+        for idx, item in enumerate(trending_data, 1):
+            table.add_row(
+                str(idx),
+                item.get('title', '未知'),
+                str(item.get('hot', ''))
+            )
+
+        console.print(table)
+        console.print("\n[yellow]输入序号查看详情，输入0返回上级菜单[/yellow]")
+        
+        choice = click.prompt("请选择", type=int, default=0)
+        
+        if choice == 0:
+            break
+        elif 1 <= choice <= len(trending_data):
+            selected_topic = trending_data[choice-1]
+            show_topic_detail(selected_topic)
+        else:
+            console.print("[red]无效的序号，请重新选择[/red]")
+
+def show_topic_detail(topic: dict):
+    while True:
+        console.print(Panel.fit(
+            f"[bold magenta]标题：[/bold magenta]{topic.get('title')}\n\n"
+            f"[bold green]热度：[/bold green]{topic.get('hot', '')}\n\n"
+            f"[bold yellow]描述：[/bold yellow]{topic.get('description', '暂无描述')}\n\n"
+            f"[bold blue]链接：[/bold blue]{topic.get('url', '暂无链接')}\n\n"
+            "\n1. 改写文章\n"
+            "0. 返回上级菜单",
+            title="热点详情"
+        ))
+        
+        choice = click.prompt("请选择", type=str, default="0")
+        
+        if choice == "1":
+            show_rewrite_menu(topic)
+            break
+        elif choice == "0":
+            break
+        else:
+            console.print("[red]无效的选项，请重新选择[/red]")
+
+def show_rewrite_menu(topic: dict):
+    while True:
+        console.print(Panel.fit(
+            f"已选择话题：{topic.get('title')}\n\n"
+            "1. 改写为观点文章\n"
+            "2. 改写为科普文章\n"
+            "3. 改写为故事文章\n"
+            "4. 改写为评论文章\n"
+            "0. 返回上级菜单",
+            title="改写菜单"
+        ))
+        
+        choice = click.prompt("请选择改写方式", type=str, default="0")
+        
+        if choice == "1":
+            from gpt import rewrite_as_opinion
+            rewrite_as_opinion(topic)
+        elif choice == "2":
+            from gpt import rewrite_as_educational
+            rewrite_as_educational(topic)
+        elif choice == "3":
+            from gpt import rewrite_as_story
+            rewrite_as_story(topic)
+        elif choice == "4":
+            from gpt import rewrite_as_commentary
+            rewrite_as_commentary(topic)
         elif choice == "0":
             break
         else:

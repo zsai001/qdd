@@ -1,8 +1,8 @@
 qdd
 
 ## 启动
-1.拷贝config.yaml.example为config.yaml
-2.修改config.yaml
+* 拷贝config.yaml.example为config.yaml
+* 修改config.yaml
   - 修改公众号配置
   - 修改OpenAI配置
   - 修改UNSPLASH_KEY
